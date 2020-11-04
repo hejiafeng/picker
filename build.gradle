@@ -1,0 +1,59 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        maven {
+            url 'https://maven.aliyun.com/repository/jcenter'
+        }
+        maven {
+            url 'https://maven.aliyun.com/repository/google'
+        }
+        jcenter()
+        google()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.4.1'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+    }
+}
+
+allprojects {
+
+    //设置项目的版本号
+    version = VERSION_NAME
+    //设置项目的组名
+    group = GROUP
+    //设置项目的归档文件基础名称
+    //archivesBaseName = project.name
+
+    //自定义项目属性
+    ext {
+        isLibrary = false
+        pomArtifactId = project.name
+        pomVersion = project.version
+        pomDescription = 'This is library description'
+    }
+
+    apply from: "${rootDir}/gradle/repository.gradle"
+
+}
+
+subprojects {
+    afterEvaluate { Project project ->
+        ext.pluginContainer = project.getPlugins()
+        def hasAppPlugin = ext.pluginContainer.hasPlugin("com.android.application")
+        def hasLibPlugin = ext.pluginContainer.hasPlugin("com.android.library")
+        if (hasAppPlugin || hasLibPlugin) {
+            configure(project) {
+                apply from: "${rootDir}/gradle/common.gradle"
+            }
+        }
+        if (project.isLibrary) {
+            configure(project) {
+                apply from: "${rootDir}/gradle/publish.gradle"
+            }
+        }
+    }
+}
+
