@@ -1,0 +1,15 @@
+apply plugin: 'com.android.library'
+
+ext {
+    isLibrary = true
+    pomArtifactId = "WheelPicker"
+    pomVersion = "2.0.0"
+    pomDescription = "wheel picker for android, include date/time/option/address, etc."
+}
+
+dependencies {
+    implementation 'androidx.fragment:fragment:1.0.0'
+    implementation project(':Logger')
+    api project(":Popup")
+    api project(":WheelView")
+}
